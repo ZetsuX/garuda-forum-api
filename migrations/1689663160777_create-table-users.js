@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+
 exports.up = (pgm) => {
   pgm.createTable("users", {
     id: {
@@ -15,6 +16,14 @@ exports.up = (pgm) => {
       notNull: true,
     },
     fullname: {
+      type: "TEXT",
+      notNull: true,
+    },
+    created_at: {
+      type: "TEXT",
+      notNull: true,
+    },
+    updated_at: {
       type: "TEXT",
       notNull: true,
     },

@@ -5,8 +5,8 @@ const PasswordHash = require("../../security/PasswordHash");
 const LoginUserUseCase = require("../LoginUserUseCase");
 const NewAuth = require("../../../Domains/authentications/entities/NewAuth");
 
-describe("GetAuthenticationUseCase", () => {
-  it("should orchestrating the get authentication action correctly", async () => {
+describe("LoginUserUseCase", () => {
+  it("should orchestrate the get authentication action correctly", async () => {
     // Arrange
     const useCasePayload = {
       username: "dicoding",
@@ -25,6 +25,9 @@ describe("GetAuthenticationUseCase", () => {
     mockUserRepository.getPasswordByUsername = jest
       .fn()
       .mockImplementation(() => Promise.resolve("encrypted_password"));
+    mockUserRepository.getIdByUsername = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve("user-123"));
     mockPasswordHash.compare = jest.fn().mockImplementation(() => Promise.resolve());
     mockAuthTokenManager.createAccessToken = jest
       .fn()
@@ -48,9 +51,16 @@ describe("GetAuthenticationUseCase", () => {
     // Assert
     expect(actualAuthentication).toEqual(expectedAuthentication);
     expect(mockUserRepository.getPasswordByUsername).toBeCalledWith("dicoding");
+    expect(mockUserRepository.getIdByUsername).toBeCalledWith("dicoding");
     expect(mockPasswordHash.compare).toBeCalledWith("secret", "encrypted_password");
-    expect(mockAuthTokenManager.createAccessToken).toBeCalledWith({ username: "dicoding" });
-    expect(mockAuthTokenManager.createRefreshToken).toBeCalledWith({ username: "dicoding" });
+    expect(mockAuthTokenManager.createAccessToken).toBeCalledWith({
+      username: "dicoding",
+      id: "user-123",
+    });
+    expect(mockAuthTokenManager.createRefreshToken).toBeCalledWith({
+      username: "dicoding",
+      id: "user-123",
+    });
     expect(mockAuthenticationRepository.addToken).toBeCalledWith(
       expectedAuthentication.refreshToken
     );

@@ -8,9 +8,11 @@ const UsersTableTestHelper = {
     password = "secret",
     fullname = "Dicoding Indonesia",
   }) {
+    const createdAt = new Date().toISOString();
+
     const query = {
-      text: "INSERT INTO users VALUES($1, $2, $3, $4)",
-      values: [id, username, password, fullname],
+      text: "INSERT INTO users VALUES($1, $2, $3, $4, $5, $6)",
+      values: [id, username, password, fullname, createdAt, createdAt],
     };
 
     await pool.query(query);
@@ -27,7 +29,7 @@ const UsersTableTestHelper = {
   },
 
   async cleanTable() {
-    await pool.query("TRUNCATE TABLE users");
+    await pool.query("DELETE FROM users");
   },
 };
 
