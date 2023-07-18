@@ -4,9 +4,9 @@ const pool = require("../src/Infrastructures/database/postgres/pool");
 const UsersTableTestHelper = {
   async addUser({
     id = "user-123",
-    username = "dicoding",
+    username = "uname",
     password = "secret",
-    fullname = "Dicoding Indonesia",
+    fullname = "Full Name",
   }) {
     const createdAt = new Date().toISOString();
 

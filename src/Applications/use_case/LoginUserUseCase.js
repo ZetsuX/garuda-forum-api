@@ -35,7 +35,6 @@ class LoginUserUseCase {
     });
 
     await this._authenticationRepository.addToken(newAuthentication.refreshToken);
-
     return newAuthentication;
   }
 }

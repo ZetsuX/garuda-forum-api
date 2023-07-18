@@ -32,7 +32,7 @@ describe("a UserRegister entities", () => {
     // Arrange
     const payload = {
       username: "dicodingindonesiadicodingindonesiadicodingindonesiadicoding",
-      fullname: "Dicoding Indonesia",
+      fullname: "Full Name",
       password: "abc",
     };
 
@@ -44,7 +44,7 @@ describe("a UserRegister entities", () => {
     // Arrange
     const payload = {
       username: "dico ding",
-      fullname: "dicoding",
+      fullname: "uname",
       password: "abc",
     };
 
@@ -57,8 +57,8 @@ describe("a UserRegister entities", () => {
   it("should create registerUser object correctly", () => {
     // Arrange
     const payload = {
-      username: "dicoding",
-      fullname: "Dicoding Indonesia",
+      username: "uname",
+      fullname: "Full Name",
       password: "abc",
     };
 

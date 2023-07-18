@@ -17,6 +17,8 @@ const AuthenticationRepository = require("../Domains/authentications/Authenticat
 const AuthenticationRepositoryPostgres = require("./repository/AuthenticationRepositoryPostgres");
 const ThreadRepository = require("../Domains/threads/ThreadRepository");
 const ThreadRepositoryPostgres = require("./repository/ThreadRepositoryPostgres");
+const CommentRepository = require("../Domains/comments/CommentRepository");
+const CommentRepositoryPostgres = require("./repository/CommentRepositoryPostgres");
 
 // use case
 const AddUserUseCase = require("../Applications/use_case/AddUserUseCase");
@@ -26,6 +28,7 @@ const LoginUserUseCase = require("../Applications/use_case/LoginUserUseCase");
 const LogoutUserUseCase = require("../Applications/use_case/LogoutUserUseCase");
 const RefreshAuthUseCase = require("../Applications/use_case/RefreshAuthUseCase");
 const PostThreadUseCase = require("../Applications/use_case/PostThreadUseCase");
+const PostCommentUseCase = require("../Applications/use_case/PostCommentUseCase");
 
 // creating container
 const container = createContainer();
@@ -71,6 +74,20 @@ container.register([
   {
     key: ThreadRepository.name,
     Class: ThreadRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+        {
+          concrete: nanoid,
+        },
+      ],
+    },
+  },
+  {
+    key: CommentRepository.name,
+    Class: CommentRepositoryPostgres,
     parameter: {
       dependencies: [
         {
@@ -175,6 +192,23 @@ container.register([
     parameter: {
       injectType: "destructuring",
       dependencies: [
+        {
+          name: "threadRepository",
+          internal: ThreadRepository.name,
+        },
+      ],
+    },
+  },
+  {
+    key: PostCommentUseCase.name,
+    Class: PostCommentUseCase,
+    parameter: {
+      injectType: "destructuring",
+      dependencies: [
+        {
+          name: "commentRepository",
+          internal: CommentRepository.name,
+        },
         {
           name: "threadRepository",
           internal: ThreadRepository.name,

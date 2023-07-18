@@ -1,6 +1,5 @@
 const pool = require("../../database/postgres/pool");
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
-const AuthenticationsTableTestHelper = require("../../../../tests/AuthenticationsTableTestHelper");
 const container = require("../../container");
 const createServer = require("../createServer");
 
@@ -11,17 +10,17 @@ describe("Users endpoints", () => {
 
   afterEach(async () => {
     await UsersTableTestHelper.cleanTable();
-    await AuthenticationsTableTestHelper.cleanTable();
   });
 
   describe("when POST /users", () => {
     it("should response 201 and persisted user", async () => {
       // Arrange
       const requestPayload = {
-        username: "dicoding",
+        username: "uname",
         password: "secret",
-        fullname: "Dicoding Indonesia",
+        fullname: "Full Name",
       };
+      // eslint-disable-next-line no-undef
       const server = await createServer(container);
 
       // Action
@@ -41,7 +40,7 @@ describe("Users endpoints", () => {
     it("should response 400 when request payload not contain needed property", async () => {
       // Arrange
       const requestPayload = {
-        fullname: "Dicoding Indonesia",
+        fullname: "Full Name",
         password: "secret",
       };
       const server = await createServer(container);
@@ -65,9 +64,9 @@ describe("Users endpoints", () => {
     it("should response 400 when request payload not meet data type specification", async () => {
       // Arrange
       const requestPayload = {
-        username: "dicoding",
+        username: "uname",
         password: "secret",
-        fullname: ["Dicoding Indonesia"],
+        fullname: ["Full Name"],
       };
       const server = await createServer(container);
 
@@ -92,7 +91,7 @@ describe("Users endpoints", () => {
       const requestPayload = {
         username: "dicodingindonesiadicodingindonesiadicodingindonesiadicoding",
         password: "secret",
-        fullname: "Dicoding Indonesia",
+        fullname: "Full Name",
       };
       const server = await createServer(container);
 
@@ -115,9 +114,9 @@ describe("Users endpoints", () => {
     it("should response 400 when username contain restricted character", async () => {
       // Arrange
       const requestPayload = {
-        username: "dicoding indonesia",
+        username: "u/name",
         password: "secret",
-        fullname: "Dicoding Indonesia",
+        fullname: "Full Name",
       };
       const server = await createServer(container);
 
@@ -139,10 +138,10 @@ describe("Users endpoints", () => {
 
     it("should response 400 when username unavailable", async () => {
       // Arrange
-      await UsersTableTestHelper.addUser({ username: "dicoding" });
+      await UsersTableTestHelper.addUser({ username: "uname" });
       const requestPayload = {
-        username: "dicoding",
-        fullname: "Dicoding Indonesia",
+        username: "uname",
+        fullname: "Full Name",
         password: "super_secret",
       };
       const server = await createServer(container);

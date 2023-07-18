@@ -1,4 +1,4 @@
-class ThreadPost {
+class PostedThread {
   constructor(payload) {
     this._verifyPayload(payload);
 
@@ -20,4 +20,4 @@ class ThreadPost {
   }
 }
 
-module.exports = ThreadPost;
+module.exports = PostedThread;

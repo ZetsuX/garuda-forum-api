@@ -30,8 +30,8 @@ describe("HTTP server", () => {
   it("should handle server error correctly", async () => {
     // Arrange
     const requestPayload = {
-      username: "dicoding",
-      fullname: "Dicoding Indonesia",
+      username: "uname",
+      fullname: "Full Name",
       password: "super_secret",
     };
     const server = await createServer({}); // fake injection

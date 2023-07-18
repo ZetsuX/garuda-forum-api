@@ -40,7 +40,7 @@ describe("a PostedThread entities", () => {
 
     // Assert
     expect(postedThread.id).toEqual(payload.id);
-    expect(postedThread.username).toEqual(payload.username);
-    expect(postedThread.fullname).toEqual(payload.fullname);
+    expect(postedThread.title).toEqual(payload.title);
+    expect(postedThread.owner).toEqual(payload.owner);
   });
 });

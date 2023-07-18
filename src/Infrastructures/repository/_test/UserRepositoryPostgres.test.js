@@ -43,7 +43,7 @@ describe("UserRepositoryPostgres", () => {
       const registerUser = new UserRegister({
         username: "usernametest",
         password: "secret_password",
-        fullname: "Dicoding Indonesia",
+        fullname: "Full Name",
       });
       const fakeIdGenerator = () => "123"; // stub!
       const userRepositoryPostgres = new UserRepositoryPostgres(pool, fakeIdGenerator);
@@ -61,7 +61,7 @@ describe("UserRepositoryPostgres", () => {
       const registerUser = new UserRegister({
         username: "usernametest",
         password: "secret_password",
-        fullname: "Dicoding Indonesia",
+        fullname: "Full Name",
       });
       const fakeIdGenerator = () => "123"; // stub!
       const userRepositoryPostgres = new UserRepositoryPostgres(pool, fakeIdGenerator);
@@ -74,7 +74,7 @@ describe("UserRepositoryPostgres", () => {
         new RegisteredUser({
           id: "user-123",
           username: "usernametest",
-          fullname: "Dicoding Indonesia",
+          fullname: "Full Name",
         })
       );
     });
