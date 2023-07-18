@@ -27,7 +27,7 @@ describe("RefreshAuthUseCase", () => {
     );
   });
 
-  it("should orchestrating the refresh authentication action correctly", async () => {
+  it("should orchestrate the refresh authentication action correctly", async () => {
     // Arrange
     const useCasePayload = {
       refreshToken: "some_refresh_token",
@@ -41,7 +41,7 @@ describe("RefreshAuthUseCase", () => {
     mockAuthTokenManager.verifyRefreshToken = jest.fn().mockImplementation(() => Promise.resolve());
     mockAuthTokenManager.decodePayload = jest
       .fn()
-      .mockImplementation(() => Promise.resolve({ username: "dicoding" }));
+      .mockImplementation(() => Promise.resolve({ username: "uname", id: "user-123" }));
     mockAuthTokenManager.createAccessToken = jest
       .fn()
       .mockImplementation(() => Promise.resolve("some_new_access_token"));
@@ -60,7 +60,10 @@ describe("RefreshAuthUseCase", () => {
       useCasePayload.refreshToken
     );
     expect(mockAuthTokenManager.decodePayload).toBeCalledWith(useCasePayload.refreshToken);
-    expect(mockAuthTokenManager.createAccessToken).toBeCalledWith({ username: "dicoding" });
+    expect(mockAuthTokenManager.createAccessToken).toBeCalledWith({
+      username: "uname",
+      id: "user-123",
+    });
     expect(accessToken).toEqual("some_new_access_token");
   });
 });
