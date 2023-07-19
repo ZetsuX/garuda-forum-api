@@ -43,6 +43,12 @@ DomainErrorTranslator._directories = {
   "THREAD_POST.NOT_MEET_DATA_TYPE_SPECIFICATION": new InvariantError(
     "tidak dapat membuat thread baru karena tipe data tidak sesuai"
   ),
+  "THREAD_DETAIL.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
+    "tidak dapat melihat detail thread karena properti yang dibutuhkan tidak ada"
+  ),
+  "THREAD_DETAIL.NOT_MEET_DATA_TYPE_SPECIFICATION": new InvariantError(
+    "tidak dapat melihat detail thread karena tipe data tidak sesuai"
+  ),
   "COMMENT_POST.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
     "tidak dapat membuat comment baru karena properti yang dibutuhkan tidak ada"
   ),
@@ -50,10 +56,10 @@ DomainErrorTranslator._directories = {
     "tidak dapat membuat comment baru karena tipe data tidak sesuai"
   ),
   "COMMENT_DELETE.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
-    "tidak dapat membuat comment baru karena properti yang dibutuhkan tidak ada"
+    "tidak dapat menghapus comment karena properti yang dibutuhkan tidak ada"
   ),
   "COMMENT_DELETE.NOT_MEET_DATA_TYPE_SPECIFICATION": new InvariantError(
-    "tidak dapat membuat comment baru karena tipe data tidak sesuai"
+    "tidak dapat menghapus comment karena tipe data tidak sesuai"
   ),
 };
 

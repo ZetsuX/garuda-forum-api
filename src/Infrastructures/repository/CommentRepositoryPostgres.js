@@ -40,7 +40,7 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async verifyCommentOwner(commentId, owner) {
     const query = {
-      text: "SELECT * FROM comments WHERE id = $1 AND owner = $2 AND is_deleted = false",
+      text: "SELECT * FROM comments WHERE id = $1 AND owner = $2",
       values: [commentId, owner],
     };
 
@@ -62,6 +62,22 @@ class CommentRepositoryPostgres extends CommentRepository {
     if (!result.rowCount) {
       throw new NotFoundError("komentar tidak ditemukan");
     }
+  }
+
+  async getCommentsByThreadId(threadId) {
+    const query = {
+      text: `
+        SELECT comments.id, users.username, comments.date, comments.content, comments.is_deleted
+        FROM comments
+        INNER JOIN users ON users.id = comments.owner
+        WHERE comments.thread_id = $1
+        ORDER BY comments.date ASC
+      `,
+      values: [threadId],
+    };
+
+    const result = await this._pool.query(query);
+    return result.rows;
   }
 }
 

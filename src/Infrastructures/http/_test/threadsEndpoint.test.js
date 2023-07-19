@@ -1,6 +1,7 @@
 const pool = require("../../database/postgres/pool");
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
 const ThreadsTableTestHelper = require("../../../../tests/ThreadsTableTestHelper");
+const CommentsTableTestHelper = require("../../../../tests/CommentsTableTestHelper");
 const container = require("../../container");
 const createServer = require("../createServer");
 const AccessTestHelper = require("../../../../tests/AccessTestHelper");
@@ -11,6 +12,7 @@ describe("Threads endpoints", () => {
   });
 
   afterEach(async () => {
+    await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
   });
@@ -95,6 +97,72 @@ describe("Threads endpoints", () => {
       expect(responseJson.message).toEqual(
         "tidak dapat membuat thread baru karena tipe data tidak sesuai"
       );
+    });
+  });
+
+  describe("when GET /threads/{threadId}", () => {
+    it("should response 404 when thread with threadId not found", async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: "GET",
+        url: "/threads/nothread",
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual("fail");
+      expect(responseJson.message).toEqual("thread tidak ditemukan");
+    });
+
+    it("should response 200 and get thread detail by id", async () => {
+      // Arrange
+      const threadId = "thread-123";
+      const owner = "user-123";
+      await UsersTableTestHelper.addUser({ id: owner });
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner });
+      await CommentsTableTestHelper.addComment({ id: "comment-123", threadId, owner });
+      await CommentsTableTestHelper.addComment({
+        id: "comment-124",
+        threadId,
+        owner,
+        isDeleted: true,
+        date: "ddate",
+      });
+
+      const expectedComments = [
+        {
+          id: "comment-123",
+          username: "uname",
+          date: "cdate",
+          content: "comment content",
+        },
+
+        {
+          id: "comment-124",
+          username: "uname",
+          date: "ddate",
+          content: "**komentar telah dihapus**",
+        },
+      ];
+
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: "GET",
+        url: `/threads/${threadId}`,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual("success");
+      expect(responseJson.data.thread).toBeDefined();
+      expect(responseJson.data.thread.comments).toStrictEqual(expectedComments);
     });
   });
 });
