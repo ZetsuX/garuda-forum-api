@@ -16,6 +16,11 @@ exports.up = (pgm) => {
       type: "VARCHAR(50)",
       notNull: true,
     },
+    is_deleted: {
+      type: "BOOLEAN",
+      notNull: true,
+      default: false,
+    },
     date: {
       type: "TEXT",
       notNull: true,
@@ -36,8 +41,8 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  pgm.dropConstraint("comments", "fk_comments.thread_id_threads.id");
   pgm.dropConstraint("comments", "fk_comments.owner_users.id");
+  pgm.dropConstraint("comments", "fk_comments.thread_id_threads.id");
 
   pgm.dropTable("comments");
 };

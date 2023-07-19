@@ -7,11 +7,12 @@ const CommentsTableTestHelper = {
     content = "comment content",
     owner = "user-123",
     threadId = "thread-123",
+    isDeleted = false,
     date = "cdate",
   }) {
     const query = {
-      text: "INSERT INTO comments VALUES($1, $2, $3, $4, $6)",
-      values: [id, content, owner, threadId, date],
+      text: "INSERT INTO comments VALUES($1, $2, $3, $4, $5, $6)",
+      values: [id, content, owner, threadId, isDeleted, date],
     };
 
     await pool.query(query);
