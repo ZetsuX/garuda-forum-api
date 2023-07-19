@@ -111,4 +111,92 @@ describe("Replies endpoints", () => {
       expect(responseJson.data.addedReply).toBeDefined();
     });
   });
+
+  describe("when DELETE /threads/{threadId}/comments/{commentId}/replies/{replyId}", () => {
+    it("should response 403 when user is not an authorized owner of the reply", async () => {
+      // Arrange
+      const accessToken = await AccessTestHelper.getToken();
+      const server = await createServer(container);
+
+      const owner = "user-121";
+      const otherUserId = "other-user";
+      await UsersTableTestHelper.addUser({ id: otherUserId, username: "otherusername" });
+
+      const threadId = "thread-123";
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner });
+
+      const commentId = "comment-123";
+      await CommentsTableTestHelper.addComment({ id: commentId, threadId, owner });
+
+      const replyId = "reply-123";
+      await RepliesTableTestHelper.addReply({ id: replyId, commentId, owner: otherUserId });
+
+      // Action
+      const response = await server.inject({
+        method: "DELETE",
+        url: `/threads/${threadId}/comments/${commentId}/replies/${replyId}`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(403);
+      expect(responseJson.status).toEqual("fail");
+      expect(responseJson.message).toEqual("tidak dapat mengakses resource ini");
+    });
+
+    it("should response 404 when thread or comment does not exist", async () => {
+      // Arrange
+      const accessToken = await AccessTestHelper.getToken();
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: "DELETE",
+        url: "/threads/no-thread/comments/no-comment/replies/no-reply",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual("fail");
+      expect(responseJson.message).toBeDefined();
+    });
+
+    it("should response 200 and delete reply successfully", async () => {
+      // Arrange
+      const accessToken = await AccessTestHelper.getToken();
+      const server = await createServer(container);
+
+      const owner = "user-121";
+
+      const threadId = "thread-123";
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner });
+
+      const commentId = "comment-123";
+      await CommentsTableTestHelper.addComment({ id: commentId, threadId, owner });
+
+      const replyId = "reply-123";
+      await RepliesTableTestHelper.addReply({ id: replyId, commentId, owner });
+
+      // Action
+      const response = await server.inject({
+        method: "DELETE",
+        url: `/threads/${threadId}/comments/${commentId}/replies/${replyId}`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual("success");
+    });
+  });
 });
