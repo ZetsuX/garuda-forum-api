@@ -32,7 +32,7 @@ describe("PostCommentUseCase", () => {
         })
       )
     );
-    mockThreadRepository.getThreadById = jest.fn().mockImplementation(() => Promise.resolve());
+    mockThreadRepository.checkThread = jest.fn().mockImplementation(() => Promise.resolve());
 
     /** creating use case instance */
     const postCommentUseCase = new PostCommentUseCase({
@@ -52,5 +52,6 @@ describe("PostCommentUseCase", () => {
         threadId: useCasePayload.threadId,
       })
     );
+    expect(mockThreadRepository.checkThread).toBeCalledWith(useCasePayload.threadId);
   });
 });

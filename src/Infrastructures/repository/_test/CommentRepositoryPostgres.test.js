@@ -108,7 +108,7 @@ describe("CommentRepositoryPostgres", () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
       // Action & Assert
-      expect(
+      await expect(
         commentRepositoryPostgres.verifyCommentOwner(commentId, wrongUserId)
       ).rejects.toThrowError(AuthorizationError);
     });
@@ -124,14 +124,14 @@ describe("CommentRepositoryPostgres", () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
       // Action & Assert
-      expect(
+      await expect(
         commentRepositoryPostgres.verifyCommentOwner(commentId, userId)
       ).resolves.not.toThrowError(AuthorizationError);
     });
   });
 
   describe("deleteCommentById function", () => {
-    it("should throw NotFoundError when comment not found", () => {
+    it("should throw NotFoundError when comment not found", async () => {
       // Arrange
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 

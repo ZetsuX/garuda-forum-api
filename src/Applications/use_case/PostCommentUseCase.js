@@ -7,7 +7,7 @@ class PostCommentUseCase {
   }
 
   async execute(useCasePayload) {
-    await this._threadRepository.getThreadById(useCasePayload.threadId);
+    await this._threadRepository.checkThread(useCasePayload.threadId);
     const commentPost = new CommentPost(useCasePayload);
     const postedComment = await this._commentRepository.postComment(commentPost);
     return postedComment;

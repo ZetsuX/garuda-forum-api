@@ -9,7 +9,7 @@ class DeleteReplyUseCase {
 
   async execute(useCasePayload) {
     const replyDelete = new ReplyDelete(useCasePayload);
-    await this._threadRepository.getThreadById(replyDelete.threadId);
+    await this._threadRepository.checkThread(replyDelete.threadId);
     await this._commentRepository.checkComment(replyDelete.commentId, replyDelete.threadId);
     await this._replyRepository.checkReply(replyDelete.replyId, replyDelete.commentId);
     await this._replyRepository.verifyReplyOwner(replyDelete.replyId, replyDelete.owner);

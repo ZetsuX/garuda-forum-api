@@ -9,7 +9,7 @@ class PostReplyUseCase {
 
   async execute(useCasePayload) {
     const replyPost = new ReplyPost(useCasePayload);
-    await this._threadRepository.getThreadById(replyPost.threadId);
+    await this._threadRepository.checkThread(replyPost.threadId);
     await this._commentRepository.checkComment(replyPost.commentId, replyPost.threadId);
     const postedReply = await this._replyRepository.postReply(replyPost);
     return postedReply;

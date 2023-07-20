@@ -2,6 +2,7 @@ const pool = require("../../database/postgres/pool");
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
 const ThreadsTableTestHelper = require("../../../../tests/ThreadsTableTestHelper");
 const CommentsTableTestHelper = require("../../../../tests/CommentsTableTestHelper");
+const RepliesTableTestHelper = require("../../../../tests/RepliesTableTestHelper");
 const container = require("../../container");
 const createServer = require("../createServer");
 const AccessTestHelper = require("../../../../tests/AccessTestHelper");
@@ -12,6 +13,7 @@ describe("Threads endpoints", () => {
   });
 
   afterEach(async () => {
+    await RepliesTableTestHelper.cleanTable();
     await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
@@ -122,9 +124,11 @@ describe("Threads endpoints", () => {
       // Arrange
       const threadId = "thread-123";
       const owner = "user-123";
+      const repliedCommentId = "comment-123";
+      const username = "uname";
       await UsersTableTestHelper.addUser({ id: owner });
       await ThreadsTableTestHelper.addThread({ id: threadId, owner });
-      await CommentsTableTestHelper.addComment({ id: "comment-123", threadId, owner });
+      await CommentsTableTestHelper.addComment({ id: repliedCommentId, threadId, owner });
       await CommentsTableTestHelper.addComment({
         id: "comment-124",
         threadId,
@@ -132,19 +136,29 @@ describe("Threads endpoints", () => {
         isDeleted: true,
         date: "ddate",
       });
+      await RepliesTableTestHelper.addReply({ id: "reply-123", repliedCommentId, owner });
 
       const expectedComments = [
         {
-          id: "comment-123",
-          username: "uname",
+          id: repliedCommentId,
+          username,
           date: "cdate",
+          replies: [
+            {
+              id: "reply-123",
+              content: "content reply",
+              username,
+              date: "rdate",
+            },
+          ],
           content: "comment content",
         },
 
         {
           id: "comment-124",
-          username: "uname",
+          username,
           date: "ddate",
+          replies: [],
           content: "**komentar telah dihapus**",
         },
       ];

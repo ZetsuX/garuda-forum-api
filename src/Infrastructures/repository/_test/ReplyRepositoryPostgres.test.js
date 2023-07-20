@@ -112,9 +112,9 @@ describe("ReplyRepositoryPostgres", () => {
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
       // Action & Assert
-      expect(replyRepositoryPostgres.verifyReplyOwner(replyId, "wrong-user")).rejects.toThrowError(
-        AuthorizationError
-      );
+      await expect(
+        replyRepositoryPostgres.verifyReplyOwner(replyId, "wrong-user")
+      ).rejects.toThrowError(AuthorizationError);
     });
 
     it("should verify the reply owner correctly", async () => {
@@ -128,14 +128,14 @@ describe("ReplyRepositoryPostgres", () => {
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
       // Action & Assert
-      expect(replyRepositoryPostgres.verifyReplyOwner(replyId, userId)).resolves.not.toThrowError(
-        AuthorizationError
-      );
+      await expect(
+        replyRepositoryPostgres.verifyReplyOwner(replyId, userId)
+      ).resolves.not.toThrowError(AuthorizationError);
     });
   });
 
   describe("deleteReplyById function", () => {
-    it("should throw NotFoundError when reply not found", () => {
+    it("should throw NotFoundError when reply not found", async () => {
       // Arrange
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 

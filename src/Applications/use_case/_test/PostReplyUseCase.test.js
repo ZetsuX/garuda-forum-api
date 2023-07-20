@@ -35,7 +35,7 @@ describe("PostReplyUseCase", () => {
         })
       )
     );
-    mockThreadRepository.getThreadById = jest.fn().mockImplementation(() => Promise.resolve());
+    mockThreadRepository.checkThread = jest.fn().mockImplementation(() => Promise.resolve());
     mockCommentRepository.checkComment = jest.fn().mockImplementation(() => Promise.resolve());
 
     /** creating use case instance */
@@ -57,6 +57,11 @@ describe("PostReplyUseCase", () => {
         threadId: useCasePayload.threadId,
         commentId: useCasePayload.commentId,
       })
+    );
+    expect(mockThreadRepository.checkThread).toBeCalledWith(useCasePayload.threadId);
+    expect(mockCommentRepository.checkComment).toBeCalledWith(
+      useCasePayload.commentId,
+      useCasePayload.threadId
     );
   });
 });
