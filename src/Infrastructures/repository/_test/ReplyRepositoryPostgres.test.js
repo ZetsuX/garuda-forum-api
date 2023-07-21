@@ -41,7 +41,11 @@ describe("ReplyRepositoryPostgres", () => {
 
       // Assert
       const replies = await RepliesTableTestHelper.findRepliesById(postedReply.id);
+      expect(replies).toBeDefined();
       expect(replies).toHaveLength(1);
+      expect(replies[0].id).toEqual("reply-123");
+      expect(replies[0].content).toEqual("Reply content");
+      expect(replies[0].owner).toEqual("user-123");
       expect(postedReply).toStrictEqual(
         new PostedReply({
           id: "reply-123",

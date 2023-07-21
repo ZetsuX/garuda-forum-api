@@ -37,7 +37,11 @@ describe("CommentRepositoryPostgres", () => {
 
       // Assert
       const comments = await CommentsTableTestHelper.findCommentsById(postedComment.id);
+      expect(comments).toBeDefined();
       expect(comments).toHaveLength(1);
+      expect(comments[0].id).toEqual("comment-123");
+      expect(comments[0].content).toEqual(postComment.content);
+      expect(comments[0].owner).toEqual(postComment.owner);
       expect(postedComment).toStrictEqual(
         new PostedComment({
           id: "comment-123",
