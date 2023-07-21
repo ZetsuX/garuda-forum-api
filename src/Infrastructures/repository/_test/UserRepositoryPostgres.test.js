@@ -49,11 +49,22 @@ describe("UserRepositoryPostgres", () => {
       const userRepositoryPostgres = new UserRepositoryPostgres(pool, fakeIdGenerator);
 
       // Action
-      await userRepositoryPostgres.addUser(registerUser);
+      const createdUser = await userRepositoryPostgres.addUser(registerUser);
 
       // Assert
       const users = await UsersTableTestHelper.findUsersById("user-123");
+      expect(users).toBeDefined();
       expect(users).toHaveLength(1);
+      expect(users[0].id).toEqual("user-123");
+      expect(users[0].username).toEqual(registerUser.username);
+      expect(users[0].fullname).toEqual(registerUser.fullname);
+      expect(createdUser).toStrictEqual(
+        new RegisteredUser({
+          id: "user-123",
+          username: registerUser.username,
+          fullname: registerUser.fullname,
+        })
+      );
     });
 
     it("should return registered user correctly", async () => {

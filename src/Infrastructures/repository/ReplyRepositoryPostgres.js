@@ -13,15 +13,14 @@ class ReplyRepositoryPostgres extends ReplyRepository {
   async postReply(postReply) {
     const { content, owner, commentId } = postReply;
     const id = `reply-${this._idGenerator()}`;
-    const date = new Date().toISOString();
 
     const query = {
-      text: "INSERT INTO replies VALUES($1, $2, $3, $4, $5, $6) RETURNING id, content, owner",
-      values: [id, content, owner, commentId, false, date],
+      text: "INSERT INTO replies VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner",
+      values: [id, content, owner, commentId, false],
     };
 
     const result = await this._pool.query(query);
-    return new PostedReply({ ...result.rows[0] });
+    return new PostedReply(result.rows[0]);
   }
 
   async checkReply(replyId, commentId) {
@@ -63,20 +62,31 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     }
   }
 
-  async getRepliesByCommentId(commentId) {
+  async getRepliesByThreadId(threadId, markDeleted = false) {
     const query = {
       text: `
-        SELECT replies.id, users.username, replies.date, replies.content, replies.is_deleted, replies.comment_id
-        FROM replies
-        INNER JOIN users ON replies.owner = users.id
-        WHERE replies.comment_id = $1
-        ORDER BY replies.date ASC
+        SELECT rp.id, us.username, rp.date, rp.content, rp.is_deleted, rp.comment_id
+        FROM replies rp
+        INNER JOIN comments cm ON cm.id = rp.comment_id
+        INNER JOIN users us ON us.id = rp.owner
+        WHERE cm.thread_id = $1
+        ORDER BY cm.date ASC, rp.comment_id ASC, rp.date ASC
       `,
-      values: [commentId],
+      values: [threadId],
     };
 
     const result = await this._pool.query(query);
-    return result.rows;
+    const replies = result.rows;
+
+    if (markDeleted) {
+      for (const reply of replies) {
+        if (reply.is_deleted) {
+          reply.content = "**balasan telah dihapus**";
+        }
+        delete reply.is_deleted;
+      }
+    }
+    return replies;
   }
 }
 

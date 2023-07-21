@@ -24,24 +24,21 @@ describe("GetThreadDetailUseCase", () => {
         username: "uname2",
         date: "2021-08-08T07:22:33.555Z",
         content: "sebuah comment",
-        is_deleted: false,
       },
       {
         id: commentId2,
         username: "uname3",
         date: "2021-08-08T07:26:21.338Z",
-        content: "sebuah comment 2",
-        is_deleted: true,
+        content: "**komentar telah dihapus**",
       },
     ];
 
     const expectedReplies = [
       {
         id: "reply-BErOXUSefjwWGW1Z10Ihk",
-        content: "reply content",
+        content: "**balasan telah dihapus**",
         date: "2021-08-08T07:59:48.766Z",
         username: "johndoe",
-        is_deleted: true,
         comment_id: commentId1,
       },
       {
@@ -49,7 +46,6 @@ describe("GetThreadDetailUseCase", () => {
         content: "sebuah balasan",
         date: "2021-08-08T08:07:01.522Z",
         username: "dicoding",
-        is_deleted: false,
         comment_id: commentId1,
       },
     ];
@@ -97,58 +93,15 @@ describe("GetThreadDetailUseCase", () => {
     const mockReplyRepository = new ReplyRepository();
 
     /** mocking needed function */
-    mockThreadRepository.getThreadById = jest.fn().mockImplementation(() =>
-      Promise.resolve({
-        id: "thread-h_2FkLZhtgBKY2kh4CC02",
-        title: "sebuah thread",
-        body: "sebuah body thread",
-        date: "2021-08-08T07:19:09.775Z",
-        username: "uname",
-      })
-    );
-    mockCommentRepository.getCommentsByThreadId = jest.fn().mockImplementation(() =>
-      Promise.resolve([
-        {
-          id: commentId1,
-          username: "uname2",
-          date: "2021-08-08T07:22:33.555Z",
-          content: "sebuah comment",
-          is_deleted: false,
-        },
-        {
-          id: commentId2,
-          username: "uname3",
-          date: "2021-08-08T07:26:21.338Z",
-          content: "sebuah comment 2",
-          is_deleted: true,
-        },
-      ])
-    );
-    mockReplyRepository.getRepliesByCommentId = jest
+    mockThreadRepository.getThreadById = jest
       .fn()
-      // eslint-disable-next-line no-confusing-arrow
-      .mockImplementation((commentId) =>
-        commentId === commentId1
-          ? Promise.resolve([
-              {
-                id: "reply-BErOXUSefjwWGW1Z10Ihk",
-                content: "reply content",
-                date: "2021-08-08T07:59:48.766Z",
-                username: "johndoe",
-                is_deleted: true,
-                comment_id: commentId1,
-              },
-              {
-                id: "reply-xNBtm9HPR-492AeiimpfN",
-                content: "sebuah balasan",
-                date: "2021-08-08T08:07:01.522Z",
-                username: "dicoding",
-                is_deleted: false,
-                comment_id: commentId1,
-              },
-            ])
-          : Promise.resolve([])
-      );
+      .mockImplementation(() => Promise.resolve(expectedThread));
+    mockCommentRepository.getCommentsByThreadId = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(expectedComments));
+    mockReplyRepository.getRepliesByThreadId = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(expectedReplies));
 
     /** creating use case instance */
     const getThreadDetailUseCase = new GetThreadDetailUseCase({
@@ -163,8 +116,10 @@ describe("GetThreadDetailUseCase", () => {
     // Assert
     expect(result).toStrictEqual(expectedResult);
     expect(mockThreadRepository.getThreadById).toBeCalledWith(useCasePayload.threadId);
-    expect(mockCommentRepository.getCommentsByThreadId).toBeCalledWith(useCasePayload.threadId);
-    expect(mockReplyRepository.getRepliesByCommentId).toBeCalledWith(commentId1);
-    expect(mockReplyRepository.getRepliesByCommentId).toBeCalledWith(commentId2);
+    expect(mockCommentRepository.getCommentsByThreadId).toBeCalledWith(
+      useCasePayload.threadId,
+      true
+    );
+    expect(mockReplyRepository.getRepliesByThreadId).toBeCalledWith(useCasePayload.threadId, true);
   });
 });

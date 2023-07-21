@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 exports.up = (pgm) => {
   pgm.createTable("users", {
     id: {
@@ -20,12 +18,12 @@ exports.up = (pgm) => {
       notNull: true,
     },
     created_at: {
-      type: "TEXT",
-      notNull: true,
+      type: "TIMESTAMP WITH TIME ZONE",
+      default: pgm.func("current_timestamp"),
     },
     updated_at: {
-      type: "TEXT",
-      notNull: true,
+      type: "TIMESTAMP WITH TIME ZONE",
+      default: pgm.func("current_timestamp"),
     },
   });
 };

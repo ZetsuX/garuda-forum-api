@@ -1,5 +1,5 @@
 {
-  "name": "auth-api",
+  "name": "garuda-forum-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,6 +8,7 @@
     "start": "node src/app.js",
     "start:dev": "nodemon src/app.js",
     "test": "jest --setupFiles dotenv/config",
+    "test:step": "jest --runInBand --detectOpenHandles --forceExit --setupFiles dotenv/config",
     "test:watch": "jest --watchAll --coverage --setupFiles dotenv/config",
     "migrate": "node-pg-migrate",
     "migrate:test": "node-pg-migrate -f config/database/test.json"

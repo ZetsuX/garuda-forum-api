@@ -38,7 +38,7 @@ describe("RefreshAuthUseCase", () => {
     mockAuthenticationRepository.checkAvailabilityToken = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
-    mockAuthTokenManager.verifyRefreshToken = jest.fn().mockImplementation(() => Promise.resolve());
+    mockAuthTokenManager.verifyRefreshToken = jest.fn(() => Promise.resolve());
     mockAuthTokenManager.decodePayload = jest
       .fn()
       .mockImplementation(() => Promise.resolve({ username: "uname", id: "user-123" }));

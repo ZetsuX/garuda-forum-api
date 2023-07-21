@@ -32,7 +32,7 @@ describe("AddUserUseCase", () => {
     mockPasswordHash.hash = jest
       .fn()
       .mockImplementation(() => Promise.resolve("encrypted_password"));
-    mockUserRepository.addUser = jest.fn().mockImplementation(() =>
+    mockUserRepository.addUser = jest.fn(() =>
       Promise.resolve(
         new RegisteredUser({
           id: "user-123",

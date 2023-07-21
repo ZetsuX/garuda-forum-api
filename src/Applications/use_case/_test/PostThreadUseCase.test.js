@@ -21,7 +21,7 @@ describe("PostThreadUseCase", () => {
     const mockThreadRepository = new ThreadRepository();
 
     /** mocking needed function */
-    mockThreadRepository.postThread = jest.fn().mockImplementation(() =>
+    mockThreadRepository.postThread = jest.fn(() =>
       Promise.resolve(
         new PostedThread({
           id: "thread-123",

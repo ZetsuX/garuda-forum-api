@@ -10,38 +10,28 @@ class GetThreadDetailUseCase {
   async execute(useCasePayload) {
     const threadDetail = new ThreadDetail(useCasePayload);
     const thread = await this._threadRepository.getThreadById(threadDetail.threadId);
-    const comments = await this._commentRepository.getCommentsByThreadId(threadDetail.threadId);
-    const commentsAndReplies = await this._attachReplies(comments);
+    const comments = await this._commentRepository.getCommentsByThreadId(
+      threadDetail.threadId,
+      true
+    );
+    const replies = await this._replyRepository.getRepliesByThreadId(threadDetail.threadId, true);
+    const commentsAndReplies = this._attachRepliesToComments(comments, replies);
 
-    const finalComments = this._markDeleted(commentsAndReplies);
     return {
       ...thread,
-      comments: finalComments,
+      comments: commentsAndReplies,
     };
   }
 
-  _markDeleted(entities, isComment = true) {
-    for (const entity of entities) {
-      if (entity.is_deleted) {
-        entity.content = `**${isComment ? "komentar" : "balasan"} telah dihapus**`;
-      }
-      delete entity.is_deleted;
-    }
-    return entities;
-  }
-
-  _removeCommentIdFromReplies(replies) {
-    for (const reply of replies) delete reply.comment_id;
-    return replies;
-  }
-
-  async _attachReplies(comments) {
+  _attachRepliesToComments(comments, replies) {
+    let i = 0;
     for (const comment of comments) {
-      // eslint-disable-next-line no-await-in-loop
-      const replies = await this._replyRepository.getRepliesByCommentId(comment.id);
-      const markedReplies = this._markDeleted(replies, false);
-      const finalReplies = this._removeCommentIdFromReplies(markedReplies);
-      comment.replies = finalReplies;
+      comment.replies = [];
+      while (i < replies.length && replies[i].comment_id === comment.id) {
+        // eslint-disable-next-line no-param-reassign
+        delete replies[i].comment_id;
+        comment.replies.push(replies[i++]);
+      }
     }
     return comments;
   }

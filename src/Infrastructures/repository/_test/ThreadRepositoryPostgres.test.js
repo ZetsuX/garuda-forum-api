@@ -66,7 +66,7 @@ describe("ThreadRepositoryPostgres", () => {
         title: "ttitle",
         body: "tbody",
         owner: "user-123",
-        date: "tdate",
+        date: "2021-08-08T07:26:21.338Z",
       };
       const userData = {
         id: "user-123",
@@ -85,7 +85,7 @@ describe("ThreadRepositoryPostgres", () => {
       expect(thread.id).toEqual(threadData.id);
       expect(thread.title).toEqual(threadData.title);
       expect(thread.body).toEqual(threadData.body);
-      expect(thread.date).toEqual(threadData.date);
+      expect(thread.date).toEqual(new Date(threadData.date));
       expect(thread.username).toEqual(userData.username);
     });
   });

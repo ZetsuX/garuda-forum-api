@@ -171,15 +171,15 @@ describe("ReplyRepositoryPostgres", () => {
   describe("getRepliesByThreadId function", () => {
     it("should show empty array if no reply found by thread ID", async () => {
       // Arrange
-      const commentId = "comment-123";
+      const threadId = "thread-123";
       await UsersTableTestHelper.addUser({ id: "user-123" });
-      await ThreadsTableTestHelper.addThread({ id: "thread-123" });
-      await CommentsTableTestHelper.addComment({ id: commentId });
+      await ThreadsTableTestHelper.addThread({ id: threadId });
+      await CommentsTableTestHelper.addComment({ id: "comment-123", threadId });
       const fakeIdGenerator = () => "123"; // stub!
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, fakeIdGenerator);
 
       // Action
-      const replies = await replyRepositoryPostgres.getRepliesByCommentId(commentId);
+      const replies = await replyRepositoryPostgres.getRepliesByThreadId(threadId);
 
       // Assert
       expect(replies).toBeDefined();
@@ -189,42 +189,132 @@ describe("ReplyRepositoryPostgres", () => {
 
   it("should get replies by thread ID correctly", async () => {
     // Arrange
-    const commentId = "comment-123";
+    const threadId = "thread-123";
+    const commentId1 = "comment-123";
+    const commentId2 = "comment-124";
     await UsersTableTestHelper.addUser({ id: "user-123" });
     await UsersTableTestHelper.addUser({ id: "user-124", username: "uname2" });
-    await ThreadsTableTestHelper.addThread({ id: "thread-123" });
-    await CommentsTableTestHelper.addComment({ id: commentId });
+    await ThreadsTableTestHelper.addThread({ id: threadId });
+    await CommentsTableTestHelper.addComment({
+      id: commentId1,
+      threadId,
+      date: "2023-07-17T13:57:11.225Z",
+    });
+    await CommentsTableTestHelper.addComment({
+      id: commentId2,
+      threadId,
+      date: "2023-07-18T13:57:11.225Z",
+    });
+
     await RepliesTableTestHelper.addReply({
       id: "reply-123",
       owner: "user-123",
-      commentId,
+      commentId: commentId1,
       date: "2023-07-19T13:57:11.225Z",
       isDeleted: true,
     });
     await RepliesTableTestHelper.addReply({
       id: "reply-124",
       owner: "user-124",
-      commentId,
+      commentId: commentId2,
       date: "2023-07-19T13:56:01.301Z",
+    });
+    await RepliesTableTestHelper.addReply({
+      id: "reply-125",
+      owner: "user-124",
+      commentId: commentId2,
+      date: "2023-07-19T13:59:01.301Z",
     });
     const fakeIdGenerator = () => "123"; // stub!
     const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, fakeIdGenerator);
 
     // Action
-    const replies = await replyRepositoryPostgres.getRepliesByCommentId(commentId);
+    const replies = await replyRepositoryPostgres.getRepliesByThreadId(threadId);
 
     // Assert
     expect(replies).toBeDefined();
-    expect(replies).toHaveLength(2);
-    expect(replies[0].id).toEqual("reply-124");
-    expect(replies[0].date).toEqual("2023-07-19T13:56:01.301Z");
-    expect(replies[0].username).toEqual("uname2");
+    expect(replies).toHaveLength(3);
+    expect(replies[0].id).toEqual("reply-123");
+    expect(replies[0].date).toEqual(new Date("2023-07-19T13:57:11.225Z"));
+    expect(replies[0].username).toEqual("uname");
     expect(replies[0].content).toEqual("content reply");
-    expect(replies[0].is_deleted).toEqual(false);
-    expect(replies[1].id).toEqual("reply-123");
-    expect(replies[1].date).toEqual("2023-07-19T13:57:11.225Z");
-    expect(replies[1].username).toEqual("uname");
+    expect(replies[0].is_deleted).toEqual(true);
+    expect(replies[0].comment_id).toEqual(commentId1);
+    expect(replies[1].id).toEqual("reply-124");
+    expect(replies[1].date).toEqual(new Date("2023-07-19T13:56:01.301Z"));
+    expect(replies[1].username).toEqual("uname2");
     expect(replies[1].content).toEqual("content reply");
-    expect(replies[1].is_deleted).toEqual(true);
+    expect(replies[1].is_deleted).toEqual(false);
+    expect(replies[1].comment_id).toEqual(commentId2);
+    expect(replies[2].id).toEqual("reply-125");
+    expect(replies[2].date).toEqual(new Date("2023-07-19T13:59:01.301Z"));
+    expect(replies[2].username).toEqual("uname2");
+    expect(replies[2].content).toEqual("content reply");
+    expect(replies[2].is_deleted).toEqual(false);
+    expect(replies[2].comment_id).toEqual(commentId2);
+  });
+
+  it("should get replies by thread ID correctly with the deleted replies marked", async () => {
+    // Arrange
+    const threadId = "thread-123";
+    const commentId1 = "comment-123";
+    const commentId2 = "comment-124";
+    await UsersTableTestHelper.addUser({ id: "user-123" });
+    await UsersTableTestHelper.addUser({ id: "user-124", username: "uname2" });
+    await ThreadsTableTestHelper.addThread({ id: threadId });
+    await CommentsTableTestHelper.addComment({
+      id: commentId1,
+      threadId,
+      date: "2023-07-17T13:57:11.225Z",
+    });
+    await CommentsTableTestHelper.addComment({
+      id: commentId2,
+      threadId,
+      date: "2023-07-18T13:57:11.225Z",
+    });
+
+    await RepliesTableTestHelper.addReply({
+      id: "reply-123",
+      owner: "user-123",
+      commentId: commentId1,
+      date: "2023-07-19T13:57:11.225Z",
+      isDeleted: true,
+    });
+    await RepliesTableTestHelper.addReply({
+      id: "reply-124",
+      owner: "user-124",
+      commentId: commentId2,
+      date: "2023-07-19T13:56:01.301Z",
+    });
+    await RepliesTableTestHelper.addReply({
+      id: "reply-125",
+      owner: "user-124",
+      commentId: commentId2,
+      date: "2023-07-19T13:59:01.301Z",
+    });
+    const fakeIdGenerator = () => "123"; // stub!
+    const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, fakeIdGenerator);
+
+    // Action
+    const replies = await replyRepositoryPostgres.getRepliesByThreadId(threadId, true);
+
+    // Assert
+    expect(replies).toBeDefined();
+    expect(replies).toHaveLength(3);
+    expect(replies[0].id).toEqual("reply-123");
+    expect(replies[0].date).toEqual(new Date("2023-07-19T13:57:11.225Z"));
+    expect(replies[0].username).toEqual("uname");
+    expect(replies[0].content).toEqual("**balasan telah dihapus**");
+    expect(replies[0].comment_id).toEqual(commentId1);
+    expect(replies[1].id).toEqual("reply-124");
+    expect(replies[1].date).toEqual(new Date("2023-07-19T13:56:01.301Z"));
+    expect(replies[1].username).toEqual("uname2");
+    expect(replies[1].content).toEqual("content reply");
+    expect(replies[1].comment_id).toEqual(commentId2);
+    expect(replies[2].id).toEqual("reply-125");
+    expect(replies[2].date).toEqual(new Date("2023-07-19T13:59:01.301Z"));
+    expect(replies[2].username).toEqual("uname2");
+    expect(replies[2].content).toEqual("content reply");
+    expect(replies[2].comment_id).toEqual(commentId2);
   });
 });

@@ -13,16 +13,15 @@ class CommentRepositoryPostgres extends CommentRepository {
   async postComment(postComment) {
     const { content, owner, threadId } = postComment;
     const id = `comment-${this._idGenerator()}`;
-    const date = new Date().toISOString();
 
     const query = {
-      text: "INSERT INTO comments VALUES($1, $2, $3, $4, $5, $6) RETURNING id, content, owner",
-      values: [id, content, owner, threadId, false, date],
+      text: "INSERT INTO comments VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner",
+      values: [id, content, owner, threadId, false],
     };
 
     const result = await this._pool.query(query);
 
-    return new PostedComment({ ...result.rows[0] });
+    return new PostedComment(result.rows[0]);
   }
 
   async checkComment(commentId, threadId) {
@@ -64,7 +63,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     }
   }
 
-  async getCommentsByThreadId(threadId) {
+  async getCommentsByThreadId(threadId, markDeleted = false) {
     const query = {
       text: `
         SELECT comments.id, users.username, comments.date, comments.content, comments.is_deleted
@@ -77,7 +76,17 @@ class CommentRepositoryPostgres extends CommentRepository {
     };
 
     const result = await this._pool.query(query);
-    return result.rows;
+    const comments = result.rows;
+
+    if (markDeleted) {
+      for (const comment of comments) {
+        if (comment.is_deleted) {
+          comment.content = "**komentar telah dihapus**";
+        }
+        delete comment.is_deleted;
+      }
+    }
+    return comments;
   }
 }
 

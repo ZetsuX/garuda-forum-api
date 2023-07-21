@@ -26,16 +26,14 @@ class UserRepositoryPostgres extends UserRepository {
     const { username, password, fullname } = registerUser;
     const id = `user-${this._idGenerator()}`;
 
-    const createdAt = new Date().toISOString();
-
     const query = {
-      text: "INSERT INTO users VALUES($1, $2, $3, $4, $5, $6) RETURNING id, username, fullname, created_at, updated_at",
-      values: [id, username, password, fullname, createdAt, createdAt],
+      text: "INSERT INTO users VALUES($1, $2, $3, $4) RETURNING id, username, fullname",
+      values: [id, username, password, fullname],
     };
 
     const result = await this._pool.query(query);
 
-    return new RegisteredUser({ ...result.rows[0] });
+    return new RegisteredUser(result.rows[0]);
   }
 
   async getPasswordByUsername(username) {

@@ -26,7 +26,7 @@ describe("PostReplyUseCase", () => {
     const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */
-    mockReplyRepository.postReply = jest.fn().mockImplementation(() =>
+    mockReplyRepository.postReply = jest.fn(() =>
       Promise.resolve(
         new PostedReply({
           id: "reply-123",
@@ -35,8 +35,8 @@ describe("PostReplyUseCase", () => {
         })
       )
     );
-    mockThreadRepository.checkThread = jest.fn().mockImplementation(() => Promise.resolve());
-    mockCommentRepository.checkComment = jest.fn().mockImplementation(() => Promise.resolve());
+    mockThreadRepository.checkThread = jest.fn(() => Promise.resolve());
+    mockCommentRepository.checkComment = jest.fn(() => Promise.resolve());
 
     /** creating use case instance */
     const postReplyUseCase = new PostReplyUseCase({

@@ -7,7 +7,7 @@ const ThreadsTableTestHelper = {
     title = "ttitle",
     body = "tbody",
     owner = "user-123",
-    date = "tdate",
+    date = "2021-08-08T07:26:21.338Z",
   }) {
     const query = {
       text: "INSERT INTO threads VALUES($1, $2, $3, $4, $5)",

@@ -28,14 +28,14 @@ describe("LoginUserUseCase", () => {
     mockUserRepository.getIdByUsername = jest
       .fn()
       .mockImplementation(() => Promise.resolve("user-123"));
-    mockPasswordHash.compare = jest.fn().mockImplementation(() => Promise.resolve());
+    mockPasswordHash.compare = jest.fn(() => Promise.resolve());
     mockAuthTokenManager.createAccessToken = jest
       .fn()
       .mockImplementation(() => Promise.resolve("access_token"));
     mockAuthTokenManager.createRefreshToken = jest
       .fn()
       .mockImplementation(() => Promise.resolve("refresh_token"));
-    mockAuthenticationRepository.addToken = jest.fn().mockImplementation(() => Promise.resolve());
+    mockAuthenticationRepository.addToken = jest.fn(() => Promise.resolve());
 
     // create use case instance
     const loginUserUseCase = new LoginUserUseCase({

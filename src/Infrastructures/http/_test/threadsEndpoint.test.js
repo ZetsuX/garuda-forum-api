@@ -125,39 +125,44 @@ describe("Threads endpoints", () => {
       const threadId = "thread-123";
       const owner = "user-123";
       const repliedCommentId = "comment-123";
+      const unrepliedCommentId = "comment-124";
       const username = "uname";
       await UsersTableTestHelper.addUser({ id: owner });
       await ThreadsTableTestHelper.addThread({ id: threadId, owner });
       await CommentsTableTestHelper.addComment({ id: repliedCommentId, threadId, owner });
       await CommentsTableTestHelper.addComment({
-        id: "comment-124",
+        id: unrepliedCommentId,
         threadId,
         owner,
         isDeleted: true,
-        date: "ddate",
+        date: "2021-08-08T07:27:21.338Z",
       });
-      await RepliesTableTestHelper.addReply({ id: "reply-123", repliedCommentId, owner });
+      await RepliesTableTestHelper.addReply({
+        id: "reply-123",
+        commentId: repliedCommentId,
+        owner,
+        date: "2021-08-12T07:26:21.338Z",
+      });
 
       const expectedComments = [
         {
           id: repliedCommentId,
           username,
-          date: "cdate",
+          date: "2021-08-08T07:26:21.338Z",
           replies: [
             {
               id: "reply-123",
               content: "content reply",
               username,
-              date: "rdate",
+              date: "2021-08-12T07:26:21.338Z",
             },
           ],
           content: "comment content",
         },
-
         {
-          id: "comment-124",
+          id: unrepliedCommentId,
           username,
-          date: "ddate",
+          date: "2021-08-08T07:27:21.338Z",
           replies: [],
           content: "**komentar telah dihapus**",
         },
