@@ -18,7 +18,7 @@ describe("Comments endpoints", () => {
   });
 
   describe("when POST /threads/thread-123/comments", () => {
-    it("should response 201 and persisted comment", async () => {
+    it("should respond with status code 201 and persisted comment", async () => {
       // Arrange
       const requestPayload = { content: "content comment" };
       const accessToken = await AccessTestHelper.getToken();
@@ -44,7 +44,7 @@ describe("Comments endpoints", () => {
       expect(responseJson.data.addedComment).toBeDefined();
     });
 
-    it("should response 400 when request payload not contain needed property", async () => {
+    it("should respond with status code 400 when request payload not contain needed property", async () => {
       // Arrange
       const requestPayload = {};
       const accessToken = await AccessTestHelper.getToken();
@@ -72,7 +72,7 @@ describe("Comments endpoints", () => {
       );
     });
 
-    it("should response 400 when request payload not meet data type specification", async () => {
+    it("should respond with status code 400 when request payload not meet data type specification", async () => {
       // Arrange
       const requestPayload = { content: 123 };
       const accessToken = await AccessTestHelper.getToken();
@@ -102,7 +102,7 @@ describe("Comments endpoints", () => {
   });
 
   describe("when DELETE /threads/{threadId}/comments/{commentId}", () => {
-    it("should response 403 when user is not an authorized owner of the comment", async () => {
+    it("should respond with status code 403 when user is not an authorized owner of the comment", async () => {
       // Arrange
       const accessToken = await AccessTestHelper.getToken();
       const server = await createServer(container);
@@ -133,7 +133,7 @@ describe("Comments endpoints", () => {
       expect(responseJson.message).toEqual("tidak dapat mengakses resource ini");
     });
 
-    it("should response 404 when comment does not exist", async () => {
+    it("should respond with status code 404 when comment does not exist", async () => {
       // Arrange
       const accessToken = await AccessTestHelper.getToken();
       const server = await createServer(container);
@@ -157,7 +157,7 @@ describe("Comments endpoints", () => {
       expect(responseJson.message).toBeDefined();
     });
 
-    it("should response 404 when thread does not exist", async () => {
+    it("should respond with status code 404 when thread does not exist", async () => {
       // Arrange
       const accessToken = await AccessTestHelper.getToken();
       const server = await createServer(container);
@@ -184,7 +184,7 @@ describe("Comments endpoints", () => {
       expect(responseJson.message).toBeDefined();
     });
 
-    it("should response 201 and delete comment successfully", async () => {
+    it("should respond with status code 201 and delete comment successfully", async () => {
       // Arrange
       const accessToken = await AccessTestHelper.getToken();
       const server = await createServer(container);

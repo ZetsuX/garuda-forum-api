@@ -20,7 +20,7 @@ describe("Replies endpoints", () => {
   });
 
   describe("when POST /threads/{threadId}/comments/{commentId}/replies", () => {
-    it("should response 400 when request payload not contain needed property", async () => {
+    it("should respond with status code 400 when request payload not contain needed property", async () => {
       // Arrange
       const requestPayload = {};
       const accessToken = await AccessTestHelper.getToken();
@@ -51,7 +51,7 @@ describe("Replies endpoints", () => {
       );
     });
 
-    it("should response 400 when request payload not meet data type specification", async () => {
+    it("should respond with status code 400 when request payload not meet data type specification", async () => {
       // Arrange
       const requestPayload = { content: 123 };
       const accessToken = await AccessTestHelper.getToken();
@@ -82,7 +82,7 @@ describe("Replies endpoints", () => {
       );
     });
 
-    it("should response 201 and persisted reply", async () => {
+    it("should respond with status code 201 and persisted reply", async () => {
       // Arrange
       const requestPayload = { content: "Reply content" };
       const accessToken = await AccessTestHelper.getToken();
@@ -113,7 +113,7 @@ describe("Replies endpoints", () => {
   });
 
   describe("when DELETE /threads/{threadId}/comments/{commentId}/replies/{replyId}", () => {
-    it("should response 403 when user is not an authorized owner of the reply", async () => {
+    it("should respond with status code 403 when user is not an authorized owner of the reply", async () => {
       // Arrange
       const accessToken = await AccessTestHelper.getToken();
       const server = await createServer(container);
@@ -147,7 +147,7 @@ describe("Replies endpoints", () => {
       expect(responseJson.message).toEqual("tidak dapat mengakses resource ini");
     });
 
-    it("should response 404 when thread or comment does not exist", async () => {
+    it("should respond with status code 404 when thread or comment does not exist", async () => {
       // Arrange
       const accessToken = await AccessTestHelper.getToken();
       const server = await createServer(container);
@@ -168,7 +168,7 @@ describe("Replies endpoints", () => {
       expect(responseJson.message).toBeDefined();
     });
 
-    it("should response 200 and delete reply successfully", async () => {
+    it("should respond with status code 200 and delete reply successfully", async () => {
       // Arrange
       const accessToken = await AccessTestHelper.getToken();
       const server = await createServer(container);

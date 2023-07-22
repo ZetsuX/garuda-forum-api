@@ -130,6 +130,34 @@ describe("DomainErrorTranslator", () => {
     ).toStrictEqual(
       new InvariantError("tidak dapat membuat reply baru karena tipe data tidak sesuai")
     );
+
+    expect(
+      DomainErrorTranslator.translate(new Error("REPLY_DELETE.NOT_CONTAIN_NEEDED_PROPERTY"))
+    ).toStrictEqual(
+      new InvariantError(
+        "tidak dapat menghapus reply baru karena properti yang dibutuhkan tidak ada"
+      )
+    );
+
+    expect(
+      DomainErrorTranslator.translate(new Error("REPLY_DELETE.NOT_MEET_DATA_TYPE_SPECIFICATION"))
+    ).toStrictEqual(
+      new InvariantError("tidak dapat menghapus reply baru karena tipe data tidak sesuai")
+    );
+
+    expect(
+      DomainErrorTranslator.translate(new Error("LIKE_PUT.NOT_CONTAIN_NEEDED_PROPERTY"))
+    ).toStrictEqual(
+      new InvariantError(
+        "tidak dapat melakukan like/unlike karena properti yang dibutuhkan tidak ada"
+      )
+    );
+
+    expect(
+      DomainErrorTranslator.translate(new Error("LIKE_PUT.NOT_MEET_DATA_TYPE_SPECIFICATION"))
+    ).toStrictEqual(
+      new InvariantError("tidak dapat melakukan like/unlike karena tipe data tidak sesuai")
+    );
   });
 
   it("should return original error when error message is not needed to translate", () => {

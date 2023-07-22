@@ -67,6 +67,18 @@ DomainErrorTranslator._directories = {
   "REPLY_POST.NOT_MEET_DATA_TYPE_SPECIFICATION": new InvariantError(
     "tidak dapat membuat reply baru karena tipe data tidak sesuai"
   ),
+  "REPLY_DELETE.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
+    "tidak dapat menghapus reply baru karena properti yang dibutuhkan tidak ada"
+  ),
+  "REPLY_DELETE.NOT_MEET_DATA_TYPE_SPECIFICATION": new InvariantError(
+    "tidak dapat menghapus reply baru karena tipe data tidak sesuai"
+  ),
+  "LIKE_PUT.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
+    "tidak dapat melakukan like/unlike karena properti yang dibutuhkan tidak ada"
+  ),
+  "LIKE_PUT.NOT_MEET_DATA_TYPE_SPECIFICATION": new InvariantError(
+    "tidak dapat melakukan like/unlike karena tipe data tidak sesuai"
+  ),
 };
 
 module.exports = DomainErrorTranslator;
