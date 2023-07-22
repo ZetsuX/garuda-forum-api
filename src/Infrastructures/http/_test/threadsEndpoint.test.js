@@ -3,6 +3,7 @@ const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
 const ThreadsTableTestHelper = require("../../../../tests/ThreadsTableTestHelper");
 const CommentsTableTestHelper = require("../../../../tests/CommentsTableTestHelper");
 const RepliesTableTestHelper = require("../../../../tests/RepliesTableTestHelper");
+const LikesTableTestHelper = require("../../../../tests/LikesTableTestHelper");
 const container = require("../../container");
 const createServer = require("../createServer");
 const AccessTestHelper = require("../../../../tests/AccessTestHelper");
@@ -20,7 +21,7 @@ describe("Threads endpoints", () => {
   });
 
   describe("when POST /threads", () => {
-    it("should response 201 and persisted thread", async () => {
+    it("should respond with status code 201 and persisted thread", async () => {
       // Arrange
       const requestPayload = {
         title: "ttitle",
@@ -46,7 +47,7 @@ describe("Threads endpoints", () => {
       expect(responseJson.data.addedThread).toBeDefined();
     });
 
-    it("should response 400 when request payload not contain needed property", async () => {
+    it("should respond with status code 400 when request payload not contain needed property", async () => {
       // Arrange
       const requestPayload = {
         title: "ttitle",
@@ -73,7 +74,7 @@ describe("Threads endpoints", () => {
       );
     });
 
-    it("should response 400 when request payload not meet data type specification", async () => {
+    it("should respond with status code 400 when request payload not meet data type specification", async () => {
       // Arrange
       const requestPayload = {
         title: 123,
@@ -103,7 +104,7 @@ describe("Threads endpoints", () => {
   });
 
   describe("when GET /threads/{threadId}", () => {
-    it("should response 404 when thread with threadId not found", async () => {
+    it("should respond with status code 404 when thread with threadId not found", async () => {
       // Arrange
       const server = await createServer(container);
 
@@ -120,7 +121,7 @@ describe("Threads endpoints", () => {
       expect(responseJson.message).toEqual("thread tidak ditemukan");
     });
 
-    it("should response 200 and get thread detail by id", async () => {
+    it("should respond with status code 200 and get thread detail by id", async () => {
       // Arrange
       const threadId = "thread-123";
       const owner = "user-123";
@@ -143,6 +144,11 @@ describe("Threads endpoints", () => {
         owner,
         date: "2021-08-12T07:26:21.338Z",
       });
+      await LikesTableTestHelper.addLike({
+        id: "like-123",
+        commentId: unrepliedCommentId,
+        owner,
+      });
 
       const expectedComments = [
         {
@@ -158,6 +164,7 @@ describe("Threads endpoints", () => {
             },
           ],
           content: "comment content",
+          likeCount: 0,
         },
         {
           id: unrepliedCommentId,
@@ -165,6 +172,7 @@ describe("Threads endpoints", () => {
           date: "2021-08-08T07:27:21.338Z",
           replies: [],
           content: "**komentar telah dihapus**",
+          likeCount: 1,
         },
       ];
 

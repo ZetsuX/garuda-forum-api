@@ -13,7 +13,7 @@ describe("Users endpoints", () => {
   });
 
   describe("when POST /users", () => {
-    it("should response 201 and persisted user", async () => {
+    it("should respond with status code 201 and persisted user", async () => {
       // Arrange
       const requestPayload = {
         username: "uname",
@@ -37,7 +37,7 @@ describe("Users endpoints", () => {
       expect(responseJson.data.addedUser).toBeDefined();
     });
 
-    it("should response 400 when request payload not contain needed property", async () => {
+    it("should respond with status code 400 when request payload not contain needed property", async () => {
       // Arrange
       const requestPayload = {
         fullname: "Full Name",
@@ -61,7 +61,7 @@ describe("Users endpoints", () => {
       );
     });
 
-    it("should response 400 when request payload not meet data type specification", async () => {
+    it("should respond with status code 400 when request payload not meet data type specification", async () => {
       // Arrange
       const requestPayload = {
         username: "uname",
@@ -86,7 +86,7 @@ describe("Users endpoints", () => {
       );
     });
 
-    it("should response 400 when username more than 50 character", async () => {
+    it("should respond with status code 400 when username more than 50 character", async () => {
       // Arrange
       const requestPayload = {
         username: "dicodingindonesiadicodingindonesiadicodingindonesiadicoding",
@@ -111,7 +111,7 @@ describe("Users endpoints", () => {
       );
     });
 
-    it("should response 400 when username contain restricted character", async () => {
+    it("should respond with status code 400 when username contain restricted character", async () => {
       // Arrange
       const requestPayload = {
         username: "u/name",
@@ -136,7 +136,7 @@ describe("Users endpoints", () => {
       );
     });
 
-    it("should response 400 when username unavailable", async () => {
+    it("should respond with status code 400 when username unavailable", async () => {
       // Arrange
       await UsersTableTestHelper.addUser({ username: "uname" });
       const requestPayload = {

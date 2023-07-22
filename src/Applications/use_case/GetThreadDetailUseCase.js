@@ -1,10 +1,11 @@
 const ThreadDetail = require("../../Domains/threads/entities/ThreadDetail");
 
 class GetThreadDetailUseCase {
-  constructor({ threadRepository, commentRepository, replyRepository }) {
+  constructor({ threadRepository, commentRepository, replyRepository, likeRepository }) {
     this._threadRepository = threadRepository;
     this._commentRepository = commentRepository;
     this._replyRepository = replyRepository;
+    this._likeRepository = likeRepository;
   }
 
   async execute(useCasePayload) {
@@ -15,18 +16,22 @@ class GetThreadDetailUseCase {
       true
     );
     const replies = await this._replyRepository.getRepliesByThreadId(threadDetail.threadId, true);
-    const commentsAndReplies = this._attachRepliesToComments(comments, replies);
+    const likeCounts = await this._likeRepository.getLikeCountsByThreadId(threadDetail.threadId);
+
+    const finalComments = this._finalizeComments(comments, replies, likeCounts);
 
     return {
       ...thread,
-      comments: commentsAndReplies,
+      comments: finalComments,
     };
   }
 
-  _attachRepliesToComments(comments, replies) {
+  _finalizeComments(comments, replies, likeCounts) {
     let i = 0;
+    let j = 0;
     for (const comment of comments) {
       comment.replies = [];
+      comment.likeCount = Number(likeCounts[j++].like_count);
       while (i < replies.length && replies[i].comment_id === comment.id) {
         // eslint-disable-next-line no-param-reassign
         delete replies[i].comment_id;

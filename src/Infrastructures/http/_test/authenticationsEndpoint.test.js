@@ -16,7 +16,7 @@ describe("Users endpoints", () => {
   });
 
   describe("when POST /authentications", () => {
-    it("should response 201 and new authentication", async () => {
+    it("should respond with status code 201 and new authentication", async () => {
       // Arrange
       const requestPayload = {
         username: "uname",
@@ -49,7 +49,7 @@ describe("Users endpoints", () => {
       expect(responseJson.data.refreshToken).toBeDefined();
     });
 
-    it("should response 400 if username not found", async () => {
+    it("should respond with status code 400 if username not found", async () => {
       // Arrange
       const requestPayload = {
         username: "uname",
@@ -71,7 +71,7 @@ describe("Users endpoints", () => {
       expect(responseJson.message).toEqual("username tidak ditemukan");
     });
 
-    it("should response 401 if password wrong", async () => {
+    it("should respond with status code 401 if password wrong", async () => {
       // Arrange
       const requestPayload = {
         username: "uname",
@@ -103,7 +103,7 @@ describe("Users endpoints", () => {
       expect(responseJson.message).toEqual("kredensial yang Anda masukkan salah");
     });
 
-    it("should response 400 if login payload not contain needed property", async () => {
+    it("should respond with status code 400 if login payload not contain needed property", async () => {
       // Arrange
       const requestPayload = {
         username: "uname",
@@ -124,7 +124,7 @@ describe("Users endpoints", () => {
       expect(responseJson.message).toEqual("harus mengirimkan username dan password");
     });
 
-    it("should response 400 if login payload wrong data type", async () => {
+    it("should respond with status code 400 if login payload wrong data type", async () => {
       // Arrange
       const requestPayload = {
         username: 123,
@@ -270,7 +270,7 @@ describe("Users endpoints", () => {
   });
 
   describe("when DELETE /authentications", () => {
-    it("should response 200 if refresh token valid", async () => {
+    it("should respond with status code 200 if refresh token valid", async () => {
       // Arrange
       const server = await createServer(container);
       const refreshToken = "refresh_token";
@@ -291,7 +291,7 @@ describe("Users endpoints", () => {
       expect(responseJson.status).toEqual("success");
     });
 
-    it("should response 400 if refresh token not registered in database", async () => {
+    it("should respond with status code 400 if refresh token not registered in database", async () => {
       // Arrange
       const server = await createServer(container);
       const refreshToken = "refresh_token";
@@ -312,7 +312,7 @@ describe("Users endpoints", () => {
       expect(responseJson.message).toEqual("refresh token tidak ditemukan di database");
     });
 
-    it("should response 400 if payload not contain refresh token", async () => {
+    it("should respond with status code 400 if payload not contain refresh token", async () => {
       // Arrange
       const server = await createServer(container);
 
@@ -329,7 +329,7 @@ describe("Users endpoints", () => {
       expect(responseJson.message).toEqual("harus mengirimkan token refresh");
     });
 
-    it("should response 400 if refresh token not string", async () => {
+    it("should respond with status code 400 if refresh token not string", async () => {
       // Arrange
       const server = await createServer(container);
 

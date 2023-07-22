@@ -13,7 +13,7 @@ describe("HTTP server", () => {
     await AuthenticationsTableTestHelper.cleanTable();
   });
 
-  it("should response 404 when request unregistered route", async () => {
+  it("should respond with status code 404 when request unregistered route", async () => {
     // Arrange
     const server = await createServer({});
 
