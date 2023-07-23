@@ -62,7 +62,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     }
   }
 
-  async getRepliesByThreadId(threadId, markDeleted = false) {
+  async getRepliesByThreadId(threadId) {
     const query = {
       text: `
         SELECT rp.id, us.username, rp.date, rp.content, rp.is_deleted, rp.comment_id
@@ -76,17 +76,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     };
 
     const result = await this._pool.query(query);
-    const replies = result.rows;
-
-    if (markDeleted) {
-      for (const reply of replies) {
-        if (reply.is_deleted) {
-          reply.content = "**balasan telah dihapus**";
-        }
-        delete reply.is_deleted;
-      }
-    }
-    return replies;
+    return result.rows;
   }
 }
 

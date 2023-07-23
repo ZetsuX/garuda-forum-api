@@ -220,42 +220,4 @@ describe("CommentRepositoryPostgres", () => {
     expect(comments[1].content).toEqual("comment content");
     expect(comments[1].is_deleted).toEqual(true);
   });
-
-  it("should get comments by thread ID correctly with the deleted comments marked", async () => {
-    // Arrange
-    const threadId = "thread-123";
-    await UsersTableTestHelper.addUser({ id: "user-123" });
-    await UsersTableTestHelper.addUser({ id: "user-124", username: "uname2" });
-    await ThreadsTableTestHelper.addThread({ id: threadId });
-    await CommentsTableTestHelper.addComment({
-      id: "comment-123",
-      owner: "user-123",
-      threadId,
-      date: "2023-07-19T13:57:11.225Z",
-      isDeleted: true,
-    });
-    await CommentsTableTestHelper.addComment({
-      id: "comment-124",
-      owner: "user-124",
-      threadId,
-      date: "2023-07-19T13:56:01.301Z",
-    });
-    const fakeIdGenerator = () => "123"; // stub!
-    const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
-
-    // Action
-    const comments = await commentRepositoryPostgres.getCommentsByThreadId(threadId, true);
-
-    // Assert
-    expect(comments).toBeDefined();
-    expect(comments).toHaveLength(2);
-    expect(comments[0].id).toEqual("comment-124");
-    expect(comments[0].date).toEqual(new Date("2023-07-19T13:56:01.301Z"));
-    expect(comments[0].username).toEqual("uname2");
-    expect(comments[0].content).toEqual("comment content");
-    expect(comments[1].id).toEqual("comment-123");
-    expect(comments[1].date).toEqual(new Date("2023-07-19T13:57:11.225Z"));
-    expect(comments[1].username).toEqual("uname");
-    expect(comments[1].content).toEqual("**komentar telah dihapus**");
-  });
 });

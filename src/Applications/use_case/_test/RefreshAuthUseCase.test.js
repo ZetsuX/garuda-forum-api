@@ -35,16 +35,14 @@ describe("RefreshAuthUseCase", () => {
     const mockAuthenticationRepository = new AuthenticationRepository();
     const mockAuthTokenManager = new AuthTokenManager();
     // Mocking
-    mockAuthenticationRepository.checkAvailabilityToken = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+    mockAuthenticationRepository.checkAvailabilityToken = jest.fn(() => Promise.resolve());
     mockAuthTokenManager.verifyRefreshToken = jest.fn(() => Promise.resolve());
-    mockAuthTokenManager.decodePayload = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve({ username: "uname", id: "user-123" }));
-    mockAuthTokenManager.createAccessToken = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve("some_new_access_token"));
+    mockAuthTokenManager.decodePayload = jest.fn(() =>
+      Promise.resolve({ username: "uname", id: "user-123" })
+    );
+    mockAuthTokenManager.createAccessToken = jest.fn(() =>
+      Promise.resolve("some_new_access_token")
+    );
     // Create the use case instace
     const refreshAuthenticationUseCase = new RefreshAuthUseCase({
       authenticationRepository: mockAuthenticationRepository,

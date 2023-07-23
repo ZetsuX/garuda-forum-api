@@ -63,7 +63,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     }
   }
 
-  async getCommentsByThreadId(threadId, markDeleted = false) {
+  async getCommentsByThreadId(threadId) {
     const query = {
       text: `
         SELECT comments.id, users.username, comments.date, comments.content, comments.is_deleted
@@ -76,17 +76,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     };
 
     const result = await this._pool.query(query);
-    const comments = result.rows;
-
-    if (markDeleted) {
-      for (const comment of comments) {
-        if (comment.is_deleted) {
-          comment.content = "**komentar telah dihapus**";
-        }
-        delete comment.is_deleted;
-      }
-    }
-    return comments;
+    return result.rows;
   }
 }
 

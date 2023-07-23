@@ -18,9 +18,7 @@ describe("DeleteCommentUseCase", () => {
     /** mocking needed function */
     mockThreadRepository.checkThread = jest.fn(() => Promise.resolve());
     mockCommentRepository.checkComment = jest.fn(() => Promise.resolve());
-    mockCommentRepository.verifyCommentOwner = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
+    mockCommentRepository.verifyCommentOwner = jest.fn(() => Promise.resolve());
     mockCommentRepository.deleteCommentById = jest.fn(() => Promise.resolve());
 
     /** creating use case instance */

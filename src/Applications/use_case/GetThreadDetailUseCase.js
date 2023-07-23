@@ -1,4 +1,6 @@
 const ThreadDetail = require("../../Domains/threads/entities/ThreadDetail");
+const MarkedComments = require("../../Domains/comments/entities/MarkedComments");
+const MarkedReply = require("../../Domains/replies/entities/MarkedReply");
 
 class GetThreadDetailUseCase {
   constructor({ threadRepository, commentRepository, replyRepository, likeRepository }) {
@@ -18,7 +20,11 @@ class GetThreadDetailUseCase {
     const replies = await this._replyRepository.getRepliesByThreadId(threadDetail.threadId, true);
     const likeCounts = await this._likeRepository.getLikeCountsByThreadId(threadDetail.threadId);
 
-    const finalComments = this._finalizeComments(comments, replies, likeCounts);
+    const finalComments = this._finalizeComments(
+      new MarkedComments(comments).returnMarked(),
+      replies,
+      likeCounts
+    );
 
     return {
       ...thread,
@@ -33,9 +39,7 @@ class GetThreadDetailUseCase {
       comment.replies = [];
       comment.likeCount = Number(likeCounts[j++].like_count);
       while (i < replies.length && replies[i].comment_id === comment.id) {
-        // eslint-disable-next-line no-param-reassign
-        delete replies[i].comment_id;
-        comment.replies.push(replies[i++]);
+        comment.replies.push(new MarkedReply(replies[i++]).returnMarked());
       }
     }
     return comments;
